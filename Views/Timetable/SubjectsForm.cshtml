@@ -1,0 +1,57 @@
+﻿@model TimetableViewModel
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4 text-primary">Allocate Hours for Subjects</h2>
+
+        <!-- Total Hours Alert -->
+        <div class="alert alert-info text-center">
+            <strong>Total Hours for the Week:</strong> <span id="totalHours">@Model.TotalHours</span>
+        </div>
+
+        <!-- Remaining Hours Progress Bar -->
+        <div class="text-center mb-3">
+            <strong>Remaining Hours:</strong> <span id="remainingHours">@Model.TotalHours</span>
+        </div>
+        <div class="progress mb-4">
+            <div id="progressBar" class="progress-bar bg-success progress-bar-striped" style="width: 100%;">
+                Remaining: @Model.TotalHours
+            </div>
+        </div>
+
+        <form method="post" asp-action="GenerateTimetable" asp-controller="Timetable" novalidate>
+            <input type="hidden" id="hiddenTotalHours" asp-for="TotalHours" />
+            <input type="hidden" asp-for="TotalSubjects" />
+            <input type="hidden" asp-for="TotalWorkingDays" />
+
+            <div class="row g-3">
+                @for (int i = 0; i < Model.Subjects.Count; i++)
+                {
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-book"></i></span>
+                            <input asp-for="Subjects[i].SubjectName" class="form-control" required placeholder="Subject Name" />
+                        </div>
+                        <span asp-validation-for="Subjects[i].SubjectName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                            <input type="number" asp-for="Subjects[i].AllocatedHours"
+                                   class="form-control subject-hours disable-on-full"
+                                   min="1" required placeholder="Allocated Hours" />
+                        </div>
+                        <span asp-validation-for="Subjects[i].AllocatedHours" class="text-danger small"></span>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" id="submitButton" class="btn btn-primary px-5 py-2" disabled>
+                    <i class="fas fa-table"></i> Generate Timetable
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
